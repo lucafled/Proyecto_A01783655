@@ -1,128 +1,209 @@
-
 #include <iostream>
+#include <cstdlib>   // para rand() y srand()
+#include <ctime>     // para time() que nos da los segundos y asi tenemos numeros diferentes constantemente 
 #include "Personaje.hpp"
-
 
 using namespace std;
 
-
-
-// main.cpp
-int main() {
-    cout << "=== Creando Arreglo de Combatientes Polimórficos ===" << endl;
-    
-
-    Unidad* ejercito[3];
-
-
-    ejercito[0] = new Guerrero(150, 40, 3, 15);  // vida, ataque, nivel, fuerza
-    ejercito[1] = new Arquero(100, 25, 3, 35);   // vida, ataque, nivel, precision
-    ejercito[2] = new Mago(80, 20, 3, 50);       // vida, ataque, nivel, mana
-
-    // imprime los 3 personajes usando polimorfismo
-    cout << "\n--- stats iniciales ---" << endl;
-    for (int i = 0; i < 3; i++) 
+// para ver si un ejercito  tiene unidades con vida
+bool ejercitoTieneVida(Unidad* ejercito[], int tamano) 
+{
+    for (int i = 0; i < tamano; i++) 
     {
-        ejercito[i]->imprimir(); 
+        if (ejercito[i]->getSalud() > 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+
+
+int main() {
+    // inicializacion de numeros random
+    srand(time(0));
+
+    const int TAMANO_EJERCITO = 3; // se le dice el tamaño del ejercito
+
+
+    // definicidn de los dos ejercitos de mismo tamaño
+    Unidad* ejercitoA[TAMANO_EJERCITO];
+    Unidad* ejercitoB[TAMANO_EJERCITO];
+
+    // crear el ejercito A
+    ejercitoA[0] = new Guerrero(150, 40, 3, 15);  // vida, ataque, nivel, fuerza
+    ejercitoA[1] = new Arquero(100, 25, 3, 35);   // vida, ataque, nivel, precision
+    ejercitoA[2] = new Mago(80, 20, 3, 50);       // vida, ataque, nivel, mana
+
+    // crear el ejercito B 
+    ejercitoB[0] = new Guerrero(140, 35, 3, 12); // vida, ataque, nivel, fuerza
+    ejercitoB[1] = new Arquero(110, 20, 3, 40);  // vida, ataque, nivel, precision
+    ejercitoB[2] = new Mago(90, 22, 3, 45);      // vida, ataque, nivel, mana
+
+
+
+
+    // stats iniciales de los dos ejercitos
+    cout << "\n--- STATS INICIALES EJERCITO A ---" << endl;
+    for (int i = 0; i < TAMANO_EJERCITO; i++) 
+    {
+        ejercitoA[i]->imprimir();
     }
 
-    // se prueban las sobrecargas correctamente (usando > con objetos desreferenciados)
-    cout << "\n---prueba de sobrecarga ---" << endl;
-    if (*ejercito[0] > *ejercito[2]) 
+    cout << "\n--- STATS INICIALES EJERCITO B ---" << endl;
+    for (int i = 0; i < TAMANO_EJERCITO; i++) 
     {
-        cout << "El Guerrero tiene mas salud que el Mago" << endl;
+        ejercitoB[i]->imprimir();
+    }
+
+
+
+
+
+    // prueba de sobrecarga para ver quien tiene mas salud
+    cout << "\n--- Prueba de sobrecarga (> salud) ---" << endl;
+    if (*ejercitoA[0] > *ejercitoB[0]) 
+    {
+        cout << "El Guerrero A tiene mas salud que el guerrero B" << endl;
     } 
     else 
     {
-        cout << "El Mago tiene mas o igual salud que el Guerrero" << endl;
+        cout << "El guerrero B tiene mas o igual salud que el guerrero A" << endl;
     }
 
-    // combate interactivo y polimorfismo
-    cout << "\n--- inicio de combate ---" << endl;
-    
-    // guerrero ataca alarquero
-    cout << "\n>>> TURNO 1: El Guerrero ataca al Arquero:" << endl;
-    ejercito[0]->atacar(*ejercito[1]);
-    cout << "\nstats del Arquero despues del ataque:" << endl;
-    ejercito[1]->imprimir();
+    // loop del juego interactivo
+    cout << "          ¡INICIO DE LA BATALLA!          " << endl;
+  
 
-    // arquero ataca al mago para probar el revive
-    cout << "\n>>> TURNO 2: El Mago recibe daño mortal para probar revive():" << endl;
-    ejercito[2]->recibeAtaque(90); 
-    cout << "\nstats del Mago despues del ataque letal:" << endl;
-    ejercito[2]->imprimir();
+    int ronda = 1;
 
-    // mago ataca al guerrero
-    cout << "\n>>> TURNO 3: El Mago ataca al Guerrero:" << endl;
-    ejercito[2]->atacar(*ejercito[0]);
-    cout << "\nstats del Guerrero despues del ataque:" << endl;
-    ejercito[0]->imprimir();
+    // mientras los dos abndos tengan un personaje vivo el juego continua
+    while (ejercitoTieneVida(ejercitoA, TAMANO_EJERCITO) && ejercitoTieneVida(ejercitoB, TAMANO_EJERCITO)) 
+    {
+        cout << "\n--- RONDA " << ronda << " ---" << endl;
 
-    // liberacion  de la memoria
-    for (int i = 0; i < 3; i++) {
-        delete ejercito[i];
+        // turno del ejercito A (lo que elige el usuario) 
+        cout << "\nTurno del ejercito A (Controlado por el usuario)" << endl;
+        cout << "Elige a tu combatiente que este vivo:" << endl;
+        for (int i = 0; i < TAMANO_EJERCITO; i++) 
+        {
+            cout << i << ". ";
+
+            // if para ver si siguen vivos o no y nos diga
+            if (ejercitoA[i]->getSalud() > 0) 
+            {
+                cout << "Unidad viva (HP: " << ejercitoA[i]->getSalud() << ")";
+            } 
+            else 
+            {
+                cout << "[CAIDO]";
+            }
+            cout << endl;
+        }
+
+
+        int seleccionA = -1; // -1 para que sea como el 0 y empieze desde nada
+
+        // do while para que si el usuario elige opciones que no son nos lo diga
+        do 
+        {
+            cout << "Ingresa el numero de combatiente a elegir (0-2): ";
+            cin >> seleccionA;
+
+            // nos dice si el soldado elegido esta muerto
+            if (seleccionA < 0 || seleccionA >= TAMANO_EJERCITO || ejercitoA[seleccionA]->getSalud() <= 0) {
+                cout << "Opcion invalida o unidad muerta, elige otra opcion" << endl;
+            }
+        } 
+        while (seleccionA < 0 || seleccionA >= TAMANO_EJERCITO || ejercitoA[seleccionA]->getSalud() <= 0);
+
+
+
+
+
+
+        // la comnputadora selecciona un objetivo VIVO y random del ejercito B 
+        int objetivoB = -1;
+        do 
+        {
+            objetivoB = rand() % TAMANO_EJERCITO;
+        } while (ejercitoB[objetivoB]->getSalud() <= 0);
+
+        cout << "\n>>> El Ejercito A ataca:" << endl;
+        ejercitoA[seleccionA]->atacar(*ejercitoB[objetivoB]);
+        cout << "Estado del objetivo del Ejercito B:" << endl;
+        ejercitoB[objetivoB]->imprimir();
+
+
+
+
+
+
+        // verificamos si el ejercito B aun vive antes de que pueda contraatacar
+        if (!ejercitoTieneVida(ejercitoB, TAMANO_EJERCITO)) 
+        {
+            break;
+        }
+
+        //  turno del B (Elegido por la computadora) 
+        cout << "\nTurno del ejercito B (Controlado por la omputadora)" << endl;
+        
+        int atacanteB = -1;
+
+        // aqui se asegura que la compu no eliga personajes muetos
+        do 
+        {
+            atacanteB = rand() % TAMANO_EJERCITO;
+        } while (ejercitoB[atacanteB]->getSalud() <= 0); 
+
+        int objetivoA = -1;
+        do 
+        {
+            objetivoA = rand() % TAMANO_EJERCITO;
+        } while (ejercitoA[objetivoA]->getSalud() <= 0);
+
+
+
+        cout << "\n>>> El ejercito B ataca:" << endl;
+        ejercitoB[atacanteB]->atacar(*ejercitoA[objetivoA]);
+        cout << "Estado del objetivo del ejercito A:" << endl;
+        ejercitoA[objetivoA]->imprimir();
+
+        ronda++;
+    }
+
+
+
+
+
+
+    // se printea el ganador
+    cout << "\n==========================================" << endl;
+    if (ejercitoTieneVida(ejercitoA, TAMANO_EJERCITO)) 
+    {
+        cout << "El ejercito A Ha ganado la batalla" << endl;
+    } 
+    else 
+    {
+        cout << "El ejercito B ha ganado la batalla El Ejercito A ha sido destruido" << endl;
+    }
+    cout << "==========================================" << endl;
+
+
+
+
+
+
+    // liberador de memoria
+    for (int i = 0; i < TAMANO_EJERCITO; i++) 
+    {
+        delete ejercitoA[i];
+        delete ejercitoB[i];
     }
 
     cout << "\nGAME OVER" << endl;
     return 0;
 }
-
-/* ==========================================
-// UML
-classDiagram
-    class Unidad 
-    {
-        -int vida
-        -int salud
-        -int ataque
-        -int nivel
-        +Unidad()
-        +Unidad(int v, int a, int n)
-        +getVida() int
-        +getSalud() int
-        +getAtaque() int
-        +getNivel() int
-        +setAtaque(int a) void
-        +setSalud(int s) void
-        +setVida(int v) void
-        +setNivel(int n) void
-        +porcentajeSalud() int
-        +imprimeBarra() void
-        +calculaAtaque(Unidad objetivo) int
-        +recibeAtaque(int ptosAtaque) void
-        +atacar(Unidad objetivo) void
-        +imprimir() void
-    }
-
-    class Guerrero 
-    {
-        -int fuerza
-        +Guerrero()
-        +Guerrero(int v, int a, int n, int f)
-        +calculaAtaque(Unidad objetivo) int
-        +recibeAtaque(int ptosAtaque) void
-        +imprimir() void
-    }
-
-    class Arquero 
-    {
-        -int precision
-        +Arquero()
-        +Arquero(int v, int a, int n, int p)
-        +calculaAtaque(Unidad objetivo) int
-        +imprimir() void
-    }
-
-    class Mago 
-    {
-        -int mana
-        +Mago()
-        +Mago(int v, int a, int n, int m)
-        +calculaAtaque(Unidad objetivo) int
-        +imprimir() void
-    }
-
-    Unidad <|-- Guerrero
-    Unidad <|-- Arquero
-    Unidad <|-- Mago
-*/
