@@ -184,11 +184,11 @@ int main() {
     cout << "\n==========================================" << endl;
     if (ejercitoTieneVida(ejercitoA, TAMANO_EJERCITO)) 
     {
-        cout << "El ejercito A Ha ganado la batalla" << endl;
+        cout << "El ejercito A ha ganado la batalla" << endl;
     } 
     else 
     {
-        cout << "El ejercito B ha ganado la batalla El Ejercito A ha sido destruido" << endl;
+        cout << "El ejercito B ha ganado la batalla el ejercito A ha sido destruido" << endl;
     }
     cout << "==========================================" << endl;
 
