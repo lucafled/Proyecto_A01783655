@@ -1,4 +1,4 @@
-//GEnera la implementación de la clase base Personaje#include "Personaje.hpp"
+#include "Personaje.hpp"
 
 using namespace std;
 
@@ -166,7 +166,6 @@ void Guerrero::recibeAtaque(int ptosAtaque)
     
     salud = salud - dañoReducido;
     if (salud <= 0) 
-    
     {
         salud = 0;
         revive(); 
@@ -182,7 +181,7 @@ void Guerrero::revive()
     {
         fuerza -= 5; 
         salud = vida * 0.20; 
-        cout << "¡El guerrero uso sus puntos de fuerza para sobrevivir! Revivi0 con " << salud << " de salud (La fuerza ahora es menor)" << endl;
+        cout << "¡El guerrero uso sus puntos de fuerza para sobrevivir! Revivio con " << salud << " de salud (La fuerza ahora es menor)" << endl;
     } 
     else 
     {
@@ -195,7 +194,7 @@ void Guerrero::revive()
 void Guerrero::imprimir() 
 {
     Unidad::imprimir();
-    cout << "Clase: Guerrero | Fuerza Extra: " << fuerza << endl; //cantidad de de fuerza
+    cout << "Clase: Guerrero | Fuerza extra: " << fuerza << endl; //cantidad de de fuerza
     cout << "-------------------------" << endl;
 }
 
@@ -261,7 +260,7 @@ void Arquero::revive()
     {
         precision /= 2; 
         salud = vida * 0.15; 
-        cout << "¡El Arquero reaccionó con reflejos felinos y esquivó la muerte! Revivió con " << salud << " HP. (Precisión reducida)" << endl;
+        cout << "¡El Arquero reacciono rapidamente y esquivo la muerte! Revivio con " << salud << " HP (Precision reducida)" << endl;
     } 
     else 
     {
@@ -272,7 +271,7 @@ void Arquero::revive()
 void Arquero::imprimir() 
 {
     Unidad::imprimir();
-    cout << "Clase: Arquero | Precisión: " << precision << "%" << endl;
+    cout << "Clase: Arquero | Precision: " << precision << "%" << endl;
     cout << "-------------------------" << endl;
 }
 
@@ -356,7 +355,7 @@ void Mago::revive()
     {
         mana -= 30; 
         salud = vida * 0.30; 
-        cout << "¡El Mago gasto su mana para lanzar un hechizo and revivir! Revivio con " << salud << " de salud" << endl;
+        cout << "¡El mago gasto su mana para lanzar un hechizo and revivir! Revivio con " << salud << " de salud" << endl;
     } 
     else 
     {
@@ -370,6 +369,6 @@ void Mago::revive()
 void Mago::imprimir() 
 {
     Unidad::imprimir();
-    cout << "Clase: Mago | Maná Actual: " << mana << endl;
+    cout << "Clase: Mago | Mana actual: " << mana << endl;
     cout << "-------------------------" << endl;
 }
